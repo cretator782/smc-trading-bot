@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Advanced SMC Trading Bot</title>
+
+    <!-- STYLE -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- TRADING VIEW -->
+    <script src="https://s3.tradingview.com/tv.js"></script>
+
+</head>
+
+<body>
+
+    <!-- ===================================== -->
+    <!-- TOP BAR -->
+    <!-- ===================================== -->
+    <div class="topbar">
+
+        <button class="menu-btn" onclick="toggleSidebar()">
+            ☰
+        </button>
+
+        <h1 class="top-title">
+            ⚡ Advanced SMC Trading Bot
+        </h1>
+
+    </div>
+
+
+
+    <!-- ===================================== -->
+    <!-- SIDEBAR -->
+    <!-- ===================================== -->
+    <div id="sidebar" class="sidebar">
+
+        <h2 class="logo">
+            ⚡ SMC BOT
+        </h2>
+
+        <ul>
+
+            <li onclick="showPage('home')">
+                🏠 Home
+            </li>
+
+            <li onclick="showPage('setup')">
+                📈 Get Setup
+            </li>
+
+            <li onclick="showPage('analyze')">
+                🧠 Analyze Setup
+            </li>
+
+            <li onclick="showPage('chart')">
+                📊 Live Chart
+            </li>
+
+            <li onclick="showPage('journal')">
+                📒 Saved Trades
+            </li>
+            <li onclick="showPage('uploadChart')">
+    📤 Upload Chart
+</li>
+
+        </ul>
+
+    </div>
+
+
+
+    <!-- ===================================== -->
+    <!-- MAIN APP -->
+    <!-- ===================================== -->
+    <div class="app">
+
+
+
+
+        <!-- ===================================== -->
+        <!-- HOME PAGE -->
+        <!-- ===================================== -->
+        <div id="home" class="page active">
+
+            <div class="card hero-card">
+
+                <h1>
+                    ⚡ Advanced Smart Money Trading System
+                </h1>
+
+                <p class="hero-text">
+
+                    This AI powered SMC trading assistant analyzes:
+                    liquidity, fair value gaps, order blocks,
+                    market structure and multi-timeframe confirmations
+                    to generate high probability trading opportunities.
+
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <div class="feature-box">
+
+                    <h3>📈 Market Structure</h3>
+
+                    <p>
+                        Detects bullish and bearish trends from higher timeframes.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <h3>💧 Liquidity Zones</h3>
+
+                    <p>
+                        Finds buy-side and sell-side liquidity targets.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <h3>📦 Order Blocks</h3>
+
+                    <p>
+                        Detects institutional order blocks for entries.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <h3>⚡ Fair Value Gaps</h3>
+
+                    <p>
+                        Finds imbalances and inefficiencies in price delivery.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <h3>🧠 Risk Management</h3>
+
+                    <p>
+                        Calculates lot size, RR and estimated profits automatically.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-box">
+
+                    <h3>📊 Multi-Timeframe</h3>
+
+                    <p>
+                        Uses 4H → 1H → 15M analysis flow for precise entries.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- ===================================== -->
+        <!-- GET SETUP PAGE -->
+        <!-- ===================================== -->
+        <div id="setup" class="page">
+
+            <div class="card">
+
+                <h1>
+                    📈 Generate Setup
+                </h1>
+
+
+                <label>
+                    Market
+                </label>
+
+                <select id="pair">
+
+                    <option value="EURUSD=X" data-tv="FX:EURUSD">
+                        EUR/USD
+                    </option>
+
+                    <option value="GBPUSD=X" data-tv="FX:GBPUSD">
+                        GBP/USD
+                    </option>
+
+                    <option value="USDJPY=X" data-tv="FX:USDJPY">
+                        USD/JPY
+                    </option>
+
+                    <option value="AUDUSD=X" data-tv="FX:AUDUSD">
+                        AUD/USD
+                    </option>
+
+                    <option value="XAUUSD=X" data-tv="OANDA:XAUUSD">
+                        GOLD
+                    </option>
+
+                    <option value="BTC-USD" data-tv="BINANCE:BTCUSDT">
+                        BTC/USD
+                    </option>
+
+                    <option value="ETH-USD" data-tv="BINANCE:ETHUSDT">
+                        ETH/USD
+                    </option>
+
+                </select>
+
+
+
+                <label>
+                    Balance
+                </label>
+
+                <input
+                    type="number"
+                    id="balance"
+                    placeholder="Enter account balance"
+                >
+
+
+
+                <label>
+                    Risk Percentage
+                </label>
+
+                <input
+                    type="number"
+                    id="risk"
+                    placeholder="Risk %"
+                    value="1"
+                >
+
+
+
+                <button
+                    id="generateBtn"
+                    onclick="generateSetup()"
+                >
+                    Generate Setup
+                </button>
+
+
+
+                <div id="result" class="result"></div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- ===================================== -->
+        <!-- ANALYZE PAGE -->
+        <!-- ===================================== -->
+        <div id="analyze" class="page">
+
+            <div class="card">
+
+                <h1>
+                    🧠 Analyze Your Setup
+                </h1>
+
+
+                <label>
+                    Entry
+                </label>
+
+                <input
+                    type="number"
+                    id="entry"
+                >
+
+
+                <label>
+                    Stop Loss
+                </label>
+
+                <input
+                    type="number"
+                    id="sl"
+                >
+
+
+                <label>
+                    Take Profit
+                </label>
+
+                <input
+                    type="number"
+                    id="tp"
+                >
+
+
+                <button onclick="getAdvice()">
+
+                    Analyze Setup
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- ===================================== -->
+        <!-- LIVE CHART PAGE -->
+        <!-- ===================================== -->
+        <div id="chart" class="page">
+
+            <div class="card">
+
+                <h1>
+                    📊 Live Trading Chart
+                </h1>
+
+                <div id="tradingview_chart"></div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- ===================================== -->
+        <!-- SAVED TRADES PAGE -->
+        <!-- ===================================== -->
+        <div id="journal" class="page">
+
+            <div class="card">
+
+                <h1>
+                    📒 Saved Trades Journal
+                </h1>
+
+                <p class="hero-text">
+
+                    Review all your previously saved trades,
+                    analyze your mistakes and improve your execution.
+
+                </p>
+
+                <div id="journalList">
+
+                    <p>
+                        No saved trades yet.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================================== -->
+<!-- UPLOAD CHART PAGE -->
+<!-- ===================================== -->
+<div id="uploadChart" class="page">
+
+    <div class="card">
+
+        <h1> Upload Market Chart</h1>
+
+        <p class="hero-text">
+            Upload screenshots from TradingView (4H, 1H, 15M, 5M).
+            The bot will analyze structure, liquidity, order blocks, and entry model.
+        </p>
+
+        <label>Upload Chart Images</label>
+
+        <input type="file" id="chartImages" multiple accept="image/*">
+
+        <button id="analyzeBtn" onclick="analyzeChartImages()">
+            🚀 Analyze Chart
+        </button>
+
+        <div id="chartResult" class="result"></div>
+
+    </div>
+
+</div>
+
+
+    </div>
+
+<div class="loader-bar">
+    <div class="loader-fill" id="loaderFill"></div>
+</div>
+
+    <!-- JAVASCRIPT -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>

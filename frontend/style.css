@@ -1,0 +1,480 @@
+/* ===================================== */
+/* GLOBAL */
+/* ===================================== */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0f1a;
+    color:white;
+    font-family:Arial, sans-serif;
+    overflow-x:hidden;
+}
+
+
+/* ===================================== */
+/* TOP BAR */
+/* ===================================== */
+.topbar{
+    width:100%;
+    height:70px;
+    background:#111827;
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1000;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.top-title{
+    margin-left:20px;
+    font-size:22px;
+    color:#00ff99;
+    letter-spacing:1px;
+}
+
+.menu-btn{
+    background:#00ff99;
+    border:none;
+    color:#000;
+    width:45px;
+    height:45px;
+    border-radius:10px;
+    font-size:22px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.menu-btn:hover{
+    transform:scale(1.05);
+    background:#00cc77;
+}
+
+
+/* ===================================== */
+/* SIDEBAR */
+/* ===================================== */
+.sidebar{
+    width:260px;
+    height:100vh;
+    background:#111827;
+    position:fixed;
+    top:0;
+    left:0;
+    padding-top:90px;
+    z-index:999;
+    transform:translateX(-260px);
+    transition:0.3s ease;
+    border-right:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:30px;
+    color:#00ff99;
+    font-size:24px;
+}
+
+.sidebar ul{
+    list-style:none;
+}
+
+.sidebar ul li{
+    padding:18px 25px;
+    font-size:18px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+
+    /* FIX TEXT CURSOR */
+    cursor:pointer;
+
+    transition:0.3s;
+    user-select:none;
+}
+
+.sidebar ul li:hover{
+    background:#1f2937;
+    padding-left:35px;
+    color:#00ff99;
+}
+
+
+/* ===================================== */
+/* MAIN APP */
+/* ===================================== */
+.app{
+    width:100%;
+    padding-top:100px;
+
+    /* FIX CONTENT INSIDE SIDEBAR */
+    padding-left:30px;
+    padding-right:30px;
+}
+
+
+/* ===================================== */
+/* PAGES */
+/* ===================================== */
+.page{
+    display:none;
+    width:100%;
+}
+
+.page.active{
+    display:block;
+}
+
+
+/* ===================================== */
+/* CARD */
+/* ===================================== */
+.card{
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    background:#111827;
+    border-radius:18px;
+    padding:30px;
+    margin-bottom:30px;
+    box-shadow:0 0 20px rgba(0,255,153,0.08);
+}
+
+
+/* ===================================== */
+/* HERO */
+/* ===================================== */
+.hero-card{
+    background:linear-gradient(
+        135deg,
+        #111827,
+        #1f2937
+    );
+}
+
+.hero-card h1{
+    font-size:38px;
+    color:#00ff99;
+    margin-bottom:20px;
+}
+
+.hero-text{
+    font-size:18px;
+    line-height:1.8;
+    color:#d1d5db;
+
+    /* FIX TEXT OVERLAP */
+    max-width:100%;
+}
+
+
+/* ===================================== */
+/* FEATURE GRID */
+/* ===================================== */
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-top:30px;
+}
+
+.feature-box{
+    background:#1f2937;
+    padding:25px;
+    border-radius:16px;
+    transition:0.3s;
+}
+
+.feature-box:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 20px rgba(0,255,153,0.15);
+}
+
+.feature-box h3{
+    color:#00ff99;
+    margin-bottom:15px;
+}
+
+.feature-box p{
+    color:#d1d5db;
+    line-height:1.6;
+}
+
+
+/* ===================================== */
+/* FORMS */
+/* ===================================== */
+label{
+    display:block;
+    margin-top:20px;
+    margin-bottom:10px;
+    font-size:17px;
+    color:#00ff99;
+}
+
+input,
+select{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#1f2937;
+    color:white;
+    font-size:16px;
+    outline:none;
+    margin-bottom:10px;
+}
+
+input:focus,
+select:focus{
+    border:1px solid #00ff99;
+}
+
+
+/* ===================================== */
+/* BUTTONS */
+/* ===================================== */
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#00ff99;
+    color:black;
+    font-size:17px;
+    font-weight:bold;
+
+    /* FIX TEXT CURSOR */
+    cursor:pointer;
+
+    margin-top:20px;
+    transition:0.3s;
+}
+
+button:hover{
+    background:#00cc77;
+    transform:translateY(-2px);
+}
+
+
+/* ===================================== */
+/* RESULT */
+/* ===================================== */
+.result{
+    margin-top:30px;
+    background:#1f2937;
+    padding:25px;
+    border-radius:16px;
+    line-height:2;
+}
+
+.result h2{
+    color:#00ff99;
+    margin-bottom:15px;
+}
+
+.result h3{
+    margin:15px 0;
+}
+
+.result hr{
+    border:none;
+    border-top:1px solid rgba(255,255,255,0.1);
+    margin:20px 0;
+}
+
+
+/* ===================================== */
+/* CHART */
+/* ===================================== */
+#tradingview_chart{
+    width:100%;
+    height:600px;
+    border-radius:16px;
+    overflow:hidden;
+}
+
+
+/* ===================================== */
+/* JOURNAL */
+/* ===================================== */
+.trade-box{
+    background:#1f2937;
+    padding:20px;
+    border-radius:14px;
+    margin-top:15px;
+    line-height:1.8;
+}
+
+.trade-box h3{
+    color:#00ff99;
+}
+
+
+/* ===================================== */
+/* MOBILE */
+/* ===================================== */
+@media(max-width:768px){
+
+    .top-title{
+        font-size:18px;
+    }
+
+    .hero-card h1{
+        font-size:28px;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .app{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    #tradingview_chart{
+        height:450px;
+    }
+
+}
+/* ===================================== */
+/* PRO GLASSMORPHIC CARD STYLE */
+/* ===================================== */
+
+.card,
+.feature-box,
+.trade-box,
+.result{
+    background: rgba(17, 24, 39, 0.55) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(0, 255, 153, 0.15);
+
+    box-shadow:
+        0 0 20px rgba(0, 255, 153, 0.08),
+        inset 0 0 20px rgba(255, 255, 255, 0.03);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* ===================================== */
+/* SOFT LIGHT GLOW BEHIND EACH BOX */
+/* ===================================== */
+
+.card::before,
+.feature-box::before,
+.trade-box::before,
+.result::before{
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+
+    background: radial-gradient(
+        circle,
+        rgba(0, 255, 153, 0.12),
+        transparent 60%
+    );
+
+    transform: rotate(25deg);
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+
+/* ===================================== */
+/* HOVER PRO EFFECT */
+/* ===================================== */
+
+.card:hover,
+.feature-box:hover,
+.trade-box:hover,
+.result:hover{
+    transform: translateY(-5px);
+    transition: 0.3s ease;
+
+    box-shadow:
+        0 0 30px rgba(0, 255, 153, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+
+/* ===================================== */
+/* TEXT IMPROVEMENT INSIDE BOXES */
+/* ===================================== */
+
+.card h1,
+.card h2,
+.feature-box h3{
+    text-shadow: 0 0 10px rgba(0, 255, 153, 0.3);
+}
+
+.card p,
+.feature-box p{
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+}
+.loader-bar {
+    width: 100%;
+    height: 10px;
+    background: #1f2937;
+    border-radius: 20px;
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+.loader-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00ff99, #00ccff);
+    border-radius: 20px;
+    transition: 0.5s;
+}
+.smc-report {
+    margin-top: 20px;
+}
+
+.smc-report .box {
+    background: rgba(31, 41, 55, 0.6);
+    padding: 15px;
+    margin-top: 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,255,153,0.15);
+}
+
+.smc-report h3 {
+    color: #00ff99;
+}
+
+.smc-report p {
+    color: #d1d5db;
+    line-height: 1.6;
+}
+
+.highlight {
+    border: 1px solid #00ff99;
+    box-shadow: 0 0 10px rgba(0,255,153,0.2);
+}
+
+.danger {
+    border: 1px solid #ff4d4d;
+}
+
+.profit {
+    border: 1px solid #00ff99;
+    background: rgba(0,255,153,0.05);
+}
+
+.final {
+    border: 1px solid #00ccff;
+}
