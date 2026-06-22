@@ -3,5 +3,6 @@ flask-cors
 yfinance
 pandas
 numpy
-ta
+opencv-python-headless
 pillow
+gunicorn

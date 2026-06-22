@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:5000";
+const API = "https://your-backend-name.onrender.com";
 
 let widget;
 let lastTrade = null;
@@ -83,6 +83,7 @@ function loadChart(symbol) {
         `;
     });
 
+    if (window.TradingView) {
     widget = new TradingView.widget({
         container_id: "tradingview_chart",
         width: "100%",
@@ -93,6 +94,7 @@ function loadChart(symbol) {
         style: "1",
         locale: "en"
     });
+}
 }
 
 function generateSetup() {
@@ -113,9 +115,18 @@ function generateSetup() {
     })
     .then(res => res.json())
     .then(data => {
-
-        const rr = (Math.abs(data.take_profit - data.entry) /
-                   Math.abs(data.entry - data.stop_loss)).toFixed(2);
+        
+if (!data.entry || !data.stop_loss || !data.take_profit) {
+    document.getElementById("result").innerHTML =
+        "<h3 style='color:red'>BAD SETUP (no valid trade data)</h3>";
+    btn.innerHTML = "Generate Setup";
+    btn.disabled = false;
+    return;
+}
+const rr = (
+    Math.abs(data.take_profit - data.entry) /
+    Math.abs(data.entry - data.stop_loss)
+).toFixed(2);
 
         let label = "POSSIBLE";
         let color = "orange";
@@ -133,7 +144,9 @@ function generateSetup() {
         const riskMoney = (balance * riskPercent / 100).toFixed(2);
         const estimatedProfit = (riskMoney * rr).toFixed(2);
         const stopDistance = Math.abs(data.entry - data.stop_loss);
-        const lotSize = (riskMoney / (stopDistance * 10000)).toFixed(2);
+       const lotSize = stopDistance
+    ? (riskMoney / (stopDistance * 10000)).toFixed(2)
+    : "0.00";
 
         let score = 50;
         let quality = "LOW";

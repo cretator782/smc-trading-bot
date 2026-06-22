@@ -1,10 +1,14 @@
 import base64
+import cv2
+import numpy as np
+from io import BytesIO
+from PIL import Image
+import os
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import yfinance as yf
 import pandas as pd
-import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -112,17 +116,16 @@ def detect_order_block(data, bias):
 
 
 # =========================
-# SAFE SL ENGINE (FIXED)
+# SAFE SL ENGINE
 # =========================
 def safe_sl(entry, ob, atr_val, bias):
 
-    buffer = atr_val * 1.8   # 🔥 MAIN FIX (bigger SL safety zone)
+    buffer = atr_val * 1.8
 
     if bias == "BULLISH":
 
         sl = min(ob["low"], entry - buffer)
 
-        # ensure SL is not too tight
         if entry - sl < buffer:
             sl = entry - buffer
 
@@ -168,38 +171,19 @@ def build_trade(pair):
         return None
 
     entry = price
-
-    # =========================
-    # SL FIXED (IMPORTANT)
-    # =========================
     sl = safe_sl(entry, ob, atr_val, bias)
 
-    # =========================
-    # TP LOGIC (LIQUIDITY BASED)
-    # =========================
     if bias == "BULLISH":
-
-        if len(swings_high) > 0:
-            tp = max(swings_high)
-        else:
-            tp = entry + (atr_val * 3)
-
+        tp = max(swings_high) if swings_high else entry + (atr_val * 3)
         if tp <= entry:
             tp = entry + (atr_val * 3)
-
     else:
-
-        if len(swings_low) > 0:
-            tp = min(swings_low)
-        else:
-            tp = entry - (atr_val * 3)
-
+        tp = min(swings_low) if swings_low else entry - (atr_val * 3)
         if tp >= entry:
             tp = entry - (atr_val * 3)
 
     rr = abs(tp - entry) / abs(entry - sl)
 
-    # no fake rejection anymore
     return {
         "bias": bias,
         "entry": round(entry, 5),
@@ -242,11 +226,8 @@ def generate_setup():
         quality = "LOW"
 
     risk_money = balance * 0.01
-
     stop_distance = abs(trade["entry"] - trade["stop_loss"])
-
     lot_size = (risk_money / (stop_distance * 10000)) if stop_distance > 0 else 0
-
     estimated_profit = risk_money * rr
 
     return jsonify({
@@ -266,7 +247,7 @@ def generate_setup():
 
 
 # =========================
-# ANALYZE SETUP
+# GET ADVICE
 # =========================
 @app.route("/get_advice", methods=["POST"])
 def get_advice():
@@ -299,83 +280,60 @@ def get_advice():
     })
 
 
-
-import base64
-import cv2
-import numpy as np
-from flask import send_file
-from io import BytesIO
-from PIL import Image
-
-
+# =========================
+# ANALYZE CHART
+# =========================
 @app.route("/analyze_chart", methods=["POST"])
 def analyze_chart():
 
     body = request.json
-    images = body.get("images", [])
+    images = body.get("images")
 
     if not images:
-        return jsonify({"error": "No images received"})
+        return jsonify({"error": "No images received"}), 400
 
-    # take first image only for now (we upgrade multi-TF later)
     img_data = images[0].split(",")[1]
     img_bytes = base64.b64decode(img_data)
 
     np_arr = np.frombuffer(img_bytes, np.uint8)
     img = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
+    if img is None:
+        return jsonify({"error": "Invalid image"}), 400
+
     h, w, _ = img.shape
 
-    # =========================
-    # SIMULATED SMC STRUCTURE DRAWING
-    # =========================
-
-    # 1. MARKET STRUCTURE LINE
     cv2.line(img, (50, int(h*0.3)), (w-50, int(h*0.4)), (0,255,0), 3)
-    cv2.putText(img, "Market Structure (BULLISH)", (60, int(h*0.28)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,0), 2)
 
-    # 2. LIQUIDITY ZONES
     cv2.rectangle(img, (50, int(h*0.1)), (w-50, int(h*0.15)), (255,0,0), 2)
-    cv2.putText(img, "Sell-side Liquidity", (60, int(h*0.09)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,0,0), 2)
 
-    cv2.rectangle(img, (50, int(h*0.8)), (w-50, int(h*0.85)), (255,0,0), 2)
-    cv2.putText(img, "Buy-side Liquidity", (60, int(h*0.88)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,0,0), 2)
-
-    # 3. ORDER BLOCK ZONE
     cv2.rectangle(img, (int(w*0.2), int(h*0.5)), (int(w*0.4), int(h*0.6)), (0,0,255), 2)
-    cv2.putText(img, "Order Block", (int(w*0.21), int(h*0.49)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,0,255), 2)
 
-    # 4. ENTRY POINT ARROW
     cv2.arrowedLine(img, (int(w*0.35), int(h*0.55)),
                          (int(w*0.5), int(h*0.65)),
                          (0,255,255), 3)
-    cv2.putText(img, "ENTRY", (int(w*0.52), int(h*0.66)),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,255,255), 2)
-
-    # =========================
-    # RETURN IMAGE AS BASE64
-    # =========================
 
     _, buffer = cv2.imencode('.png', img)
     encoded_img = base64.b64encode(buffer).decode('utf-8')
 
     return jsonify({
-    "annotated_image": encoded_img,
-    "bias": "BULLISH",
-    "structure": "Market is in bullish trend with HH and HL",
-    "liquidity": "Sell-side liquidity above highs",
-    "order_blocks": "Bullish OB detected on demand zone",
-    "fvg": "Fair Value Gap present in impulsive move",
-    "entry": "Wait for retracement into OB or FVG",
-    "sl": "Below last liquidity sweep",
-    "tp": "Next buy-side liquidity",
-    "advice": "Wait for confirmation on lower timeframe"
-})
-          
+        "annotated_image": encoded_img,
+        "bias": "BULLISH",
+        "structure": "Market is in bullish trend",
+        "liquidity": "Sell-side liquidity above highs",
+        "order_blocks": "Bullish OB detected",
+        "fvg": "Fair Value Gap present",
+        "entry": "Wait for retracement",
+        "sl": "Below liquidity sweep",
+        "tp": "Next highs",
+        "advice": "Wait for confirmation"
+    })
+
+
+# =========================
+# RUN APP
+# =========================
 if __name__ == "__main__":
-    print("SMC BOT FIXED SL VERSION RUNNING")
-    app.run(debug=True)
+    print("SMC BOT RUNNING")
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
