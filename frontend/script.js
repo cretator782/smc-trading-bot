@@ -1,4 +1,4 @@
-const API = "https://your-backend-name.onrender.com";
+const API = "https://smc-trading-bot-14.onrender.com";
 
 let widget;
 let lastTrade = null;
