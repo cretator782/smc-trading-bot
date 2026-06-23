@@ -211,7 +211,7 @@ def generate_setup():
         return jsonify({
             "status": "BAD",
             "reason": "No valid SMC setup"
-        })
+        }), 400
 
     rr = trade["rr"]
 
@@ -227,6 +227,7 @@ def generate_setup():
 
     risk_money = balance * 0.01
     stop_distance = abs(trade["entry"] - trade["stop_loss"])
+
     lot_size = (risk_money / (stop_distance * 10000)) if stop_distance > 0 else 0
     estimated_profit = risk_money * rr
 
@@ -287,7 +288,7 @@ def get_advice():
 def analyze_chart():
 
     body = request.json
-    images = body.get("images")
+    images = body.get("images", [])
 
     if not images:
         return jsonify({"error": "No images received"}), 400
@@ -329,7 +330,24 @@ def analyze_chart():
         "advice": "Wait for confirmation"
     })
 
+@app.route("/live_price", methods=["GET"])
+def live_price():
 
+    pair = request.args.get("pair")
+
+    data = yf.download(
+        pair,
+        period="1d",
+        interval="1m",
+        progress=False
+    )
+
+    if data is None or data.empty:
+        return jsonify({"price": 0})
+
+    price = float(data["Close"].iloc[-1])
+
+    return jsonify({"price": price})
 # =========================
 # RUN APP
 # =========================
