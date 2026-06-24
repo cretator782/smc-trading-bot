@@ -256,17 +256,14 @@ function saveTrade() {
 
     let journal = JSON.parse(localStorage.getItem("journal")) || [];
 
-    lastTrade.statusColor = "blue";
-    lastTrade.tradeStatus = "RUNNING";
+    lastTrade.status = "RUNNING";
 
     journal.push(lastTrade);
 
     localStorage.setItem("journal", JSON.stringify(journal));
 
-    alert("Trade saved successfully ✔");
     loadJournal();
 }
-
 // =========================
 // LOAD JOURNAL
 // =========================
@@ -276,95 +273,58 @@ function loadJournal() {
 
     let html = "";
 
-    // show latest first but KEEP correct mapping
-    journal.slice().reverse().forEach((t) => {
+    journal.slice().reverse().forEach((t, index) => {
 
-        const realIndex = journal.indexOf(t); // 🔥 FIXED INDEX MAPPING
+        const realIndex = journal.length - 1 - index;
 
         const { state, color } = getTradeColor(t);
 
         html += `
-            <div class="trade-box"
-                style="
-                    width:min(240px, calc(50% - 20px));
-                    margin:10px;
-                    padding:12px;
-                    border-radius:12px;
-                    background:${color};
-                    color:white;
-                    box-shadow:0 6px 16px rgba(0,0,0,0.35);
-                    position:relative;
-                    flex:0 0 auto;
-                ">
+            <div style="
+                width:240px;
+                margin:10px;
+                padding:12px;
+                border-radius:12px;
+                background:${color};
+                color:white;
+                flex:0 0 auto;
+                box-shadow:0 6px 16px rgba(0,0,0,0.35);
+            ">
 
-                <!-- 3 DOT MENU -->
-                <div style="
-                    position:absolute;
-                    top:8px;
-                    right:10px;
-                    cursor:pointer;
-                    font-size:18px;
-                " onclick="toggleMenu(event, ${realIndex})">
-                    ⋮
-                </div>
+                <h3>${t.pair} - ${state}</h3>
 
-                <!-- DELETE MENU -->
-                <div id="menu-${realIndex}" style="
-                    display:none;
-                    position:absolute;
-                    top:28px;
-                    right:10px;
-                    background:#111827;
-                    padding:6px;
-                    border-radius:6px;
-                    z-index:10;
-                ">
-                    <button onclick="deleteTrade(${realIndex})"
-                        style="
-                            background:#ef4444;
-                            color:white;
-                            border:none;
-                            padding:5px 10px;
-                            border-radius:5px;
-                            cursor:pointer;
-                        ">
-                        Delete
-                    </button>
-                </div>
+                <p>Entry: ${t.entry}</p>
+                <p>SL: ${t.sl}</p>
+                <p>TP: ${t.tp}</p>
 
-                <h3 style="margin:20px 0 8px 0;">${t.pair} - ${state}</h3>
+                <button onclick="setTradeStatus(${realIndex}, 'TP')">TP</button>
+                <button onclick="setTradeStatus(${realIndex}, 'SL')">SL</button>
+                <button onclick="deleteTrade(${realIndex})">Delete</button>
 
-                <p style="margin:4px 0;">Entry: ${t.entry}</p>
-                <p style="margin:4px 0;">SL: ${t.sl}</p>
-                <p style="margin:4px 0;">TP: ${t.tp}</p>
-                <p style="margin:4px 0;">R/R: ${t.rr}</p>
-                <p style="margin:4px 0; font-size:12px; opacity:0.85;">${t.time}</p>
             </div>
         `;
     });
 
-   document.getElementById("journalList").innerHTML =
-    journal.length
-        ? `<div style="
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:flex-start;
-            align-items:flex-start;
-        ">${html}</div>`
-        : "<p>No saved trades yet.</p>";
+    document.getElementById("journalList").innerHTML =
+        journal.length
+            ? `<div style="display:flex;flex-wrap:wrap;">${html}</div>`
+            : "<p>No saved trades yet.</p>";
 }
 function deleteTrade(index) {
 
     let journal = JSON.parse(localStorage.getItem("journal")) || [];
 
-    // reverse to match UI order
-    let reversed = journal.slice().reverse();
+    journal.splice(index, 1);
 
-    // remove correct item from reversed list
-    reversed.splice(index, 1);
+    localStorage.setItem("journal", JSON.stringify(journal));
 
-    // restore original order before saving
-    journal = reversed.slice().reverse();
+    loadJournal();
+}
+function setTradeStatus(index, status) {
+
+    let journal = JSON.parse(localStorage.getItem("journal")) || [];
+
+    journal[index].status = status;
 
     localStorage.setItem("journal", JSON.stringify(journal));
 
@@ -545,11 +505,13 @@ function getTradeColor(t) {
     let color = "#3b82f6";
 
     if (t.status === "TP") {
-        return { state: "TP", color: "#22c55e" };
+        state = "TP HIT";
+        color = "#22c55e";
     }
 
     if (t.status === "SL") {
-        return { state: "SL", color: "#ef4444" };
+        state = "SL HIT";
+        color = "#ef4444";
     }
 
     return { state, color };
@@ -561,6 +523,11 @@ async function updateTradeStates() {
 
     for (let t of journal) {
 
+        // ❗ skip if manually set (DO NOT overwrite)
+        if (t.status === "TP" || t.status === "SL") {
+            continue;
+        }
+
         try {
             const res = await fetch(`${API}/live_price?pair=${t.pair}`);
             const data = await res.json();
@@ -571,7 +538,6 @@ async function updateTradeStates() {
             const sl = parseFloat(t.sl);
             const tp = parseFloat(t.tp);
 
-            // update status
             if (price >= tp && entry < tp) {
                 t.status = "TP";
             }
@@ -586,6 +552,8 @@ async function updateTradeStates() {
     }
 
     localStorage.setItem("journal", JSON.stringify(journal));
+
+    // smoother refresh
     requestAnimationFrame(loadJournal);
 }
 setInterval(updateTradeStates, 10000);
