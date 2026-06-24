@@ -286,7 +286,7 @@ function loadJournal() {
         html += `
             <div class="trade-box"
                 style="
-                    width:240px;
+                    width:min(240px, calc(50% - 20px));
                     margin:10px;
                     padding:12px;
                     border-radius:12px;
@@ -343,15 +343,15 @@ function loadJournal() {
         `;
     });
 
-    document.getElementById("journalList").innerHTML =
-        journal.length
-            ? `<div style="
-                display:flex;
-                flex-wrap:wrap;
-                justify-content:flex-start;
-                align-items:flex-start;
-            ">${html}</div>`
-            : "<p>No saved trades yet.</p>";
+   document.getElementById("journalList").innerHTML =
+    journal.length
+        ? `<div style="
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:flex-start;
+            align-items:flex-start;
+        ">${html}</div>`
+        : "<p>No saved trades yet.</p>";
 }
 function deleteTrade(index) {
 

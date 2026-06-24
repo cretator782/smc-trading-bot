@@ -134,7 +134,7 @@ body{
 /* CARD */
 /* ===================================== */
 .card{
-    width:100%;
+    
     max-width:1200px;
     margin:auto;
     background:#111827;
@@ -151,8 +151,8 @@ body{
 .hero-card{
     background:linear-gradient(
         135deg,
-        #111827,
-        #1f2937
+        #35ad17,
+        #aed817
     );
 }
 
@@ -486,12 +486,5 @@ button{
     flex-direction: column;
     align-items: flex-start;
 }
-.topbar {
-    position: relative;
-    z-index: 1000;
-}
 
-.menu-btn {
-    position: relative;
-    z-index: 1100;
-}
+
