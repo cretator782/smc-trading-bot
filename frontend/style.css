@@ -189,10 +189,7 @@ body{
     transition:0.3s;
 }
 
-.feature-box:hover{
-    transform:translateY(-5px);
-    box-shadow:0 0 20px rgba(0,255,153,0.15);
-}
+
 
 .feature-box h3{
     color:#00ff99;
@@ -255,10 +252,6 @@ button{
     transition:0.3s;
 }
 
-button:hover{
-    background:#00cc77;
-    transform:translateY(-2px);
-}
 
 
 /* ===================================== */
@@ -396,9 +389,9 @@ button:hover{
 /* HOVER PRO EFFECT */
 /* ===================================== */
 
-.card:hover,
-.feature-box:hover,
-.trade-box:hover,
+
+
+
 .result:hover{
     transform: translateY(-5px);
     transition: 0.3s ease;
@@ -477,4 +470,28 @@ button:hover{
 
 .final {
     border: 1px solid #00ccff;
+}
+.trade-box {
+    width: 70%;
+    max-width: 900px;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 10px;
+    background: #111827;
+    color: white;
+    text-align: left;
+}
+#journalList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.topbar {
+    position: relative;
+    z-index: 1000;
+}
+
+.menu-btn {
+    position: relative;
+    z-index: 1100;
 }
