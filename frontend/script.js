@@ -186,6 +186,11 @@ async function generateSetup() {
 
     const riskMoney = (balance * riskPercent / 100).toFixed(2);
     const estimatedProfit = (riskMoney * rr).toFixed(2);
+    const balanceAfterTP =
+    (parseFloat(balance) + parseFloat(estimatedProfit)).toFixed(2);
+
+const balanceAfterSL =
+    (parseFloat(balance) - parseFloat(riskMoney)).toFixed(2);
 
     const stopDistance = Math.abs(data.entry - data.stop_loss);
 
@@ -205,6 +210,13 @@ async function generateSetup() {
     }
 
     let feedback = "";
+    let marketDirection = "CONSOLIDATION";
+
+if (data.take_profit > data.entry) {
+    marketDirection = "BULLISH";
+} else if (data.take_profit < data.entry) {
+    marketDirection = "BEARISH";
+}
 
     if (label === "GOOD") {
         feedback = "Strong market alignment. Structure supports continuation move.";
@@ -237,7 +249,24 @@ async function generateSetup() {
         <p><b>Stop Loss:</b> ${data.stop_loss}</p>
         <p><b>Take Profit:</b> ${data.take_profit}</p>
         <p><b>Risk Money:</b> $${riskMoney}</p>
-        <p><b>Lot Size:</b> ${lotSize}</p>
+<p><b>Lot Size:</b> ${lotSize}</p>
+
+<hr>
+
+<p><b>Market Direction:</b> ${marketDirection}</p>
+
+<p><b>Balance After TP:</b>
+<span style="color:lime">
+$${balanceAfterTP}
+</span>
+</p>
+
+<p><b>Balance After SL:</b>
+<span style="color:red">
+$${balanceAfterSL}
+</span>
+</p>
+        
         <hr>
         <h3>🧠 Coach Feedback</h3>
         <p>${feedback}</p>
@@ -263,6 +292,13 @@ function saveTrade() {
     localStorage.setItem("journal", JSON.stringify(journal));
 
     loadJournal();
+}
+// other functions above...
+
+function saveNotes() {
+    const notes = document.getElementById("notesBox").value;
+    localStorage.setItem("forexNotes", notes);
+    alert("Notes saved successfully!");
 }
 // =========================
 // LOAD JOURNAL
@@ -556,4 +592,15 @@ async function updateTradeStates() {
     // smoother refresh
     requestAnimationFrame(loadJournal);
 }
+window.addEventListener("load", () => {
+    const savedNotes = localStorage.getItem("forexNotes");
+    if (savedNotes) {
+        document.getElementById("notesBox").value = savedNotes;
+    }
+});
+document.addEventListener("input", (e) => {
+    if (e.target.id === "notesBox") {
+        localStorage.setItem("forexNotes", e.target.value);
+    }
+});
 setInterval(updateTradeStates, 10000);
